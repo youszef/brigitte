@@ -1,0 +1,43 @@
+---
+
+AllCops:
+  TargetRubyVersion: 2.7
+  Exclude:
+    - 'db/**/*'
+    - 'node_modules/**/*'
+    - 'bin/*'
+Style/Documentation:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: true
+Metrics/ClassLength:
+  Enabled: true
+Metrics/MethodLength:
+  Enabled: true
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - 'config/initializers/inflections.rb'
+    - 'config/routes.rb'
+    - 'lib/tasks/**/*'
+    - 'Rakefile'
+    - 'spec/**/*'
+Layout/LineLength:
+  Enabled: true
+  Max: 120
+Metrics/AbcSize:
+  Enabled: true
+Metrics/PerceivedComplexity:
+  Enabled: true
+Metrics/CyclomaticComplexity:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
