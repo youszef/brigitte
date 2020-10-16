@@ -7,21 +7,18 @@ RSpec.describe Brigitte::Game, type: :model do
 
   describe '#initialize' do
     it 'sets active_players' do
-      game = described_class.new(*player_names)
+      game = described_class.new.start_new_game(*player_names)
       expect(game.active_players.map(&:name)).to eq player_names
     end
+
     it 'sets new deck of cards' do
-      game = described_class.new(*player_names)
+      game = described_class.new.start_new_game(*player_names)
       expect(game.cards.all? { |card| card.is_a? Brigitte::Card }).to be_truthy
-      expect(game.cards.count).to eq 52
+      expect(game.cards.count).to eq(52 - (game.active_players.count * 9))
     end
   end
   describe '#deal_cards' do
-    let(:game) { described_class.new(*player_names) }
-
-    before do
-      game.deal_cards
-    end
+    let(:game) { described_class.new.start_new_game(*player_names) }
 
     it 'gives each user 3 hidden cards' do
       expect(game.active_players.all? { |player| player.hidden_cards.count == 3 }).to be_truthy
@@ -35,10 +32,9 @@ RSpec.describe Brigitte::Game, type: :model do
   end
   describe '#play' do
     context 'when not all active_players are ready' do
-      let(:game) { described_class.new(*player_names) }
+      let(:game) { described_class.new.start_new_game(*player_names) }
 
       before do
-        game.deal_cards
         game.active_players.first.ready!
       end
 
@@ -50,10 +46,9 @@ RSpec.describe Brigitte::Game, type: :model do
       end
     end
     context 'when all active_players are ready' do
-      let(:game) { described_class.new(*player_names) }
+      let(:game) { described_class.new.start_new_game(*player_names) }
 
       before do
-        game.deal_cards
         game.active_players.each(&:ready!)
       end
 
@@ -67,11 +62,10 @@ RSpec.describe Brigitte::Game, type: :model do
     end
   end
   describe '#throw_card' do
-    let(:game) { described_class.new(*player_names) }
+    let(:game) { described_class.new.start_new_game(*player_names) }
 
     context 'when player who is not in turn throws card' do
       before do
-        game.deal_cards
         game.active_players.each(&:ready!)
         game.play
       end
@@ -102,7 +96,6 @@ RSpec.describe Brigitte::Game, type: :model do
     end
     context 'when player is in turn but throws card not in hand' do
       before do
-        game.deal_cards
         game.active_players.each(&:ready!)
         game.play
       end
@@ -136,7 +129,6 @@ RSpec.describe Brigitte::Game, type: :model do
 
       context 'throws single card' do
         before do
-          game.deal_cards
           game.active_players.each(&:ready!)
           game.play
         end
@@ -183,6 +175,7 @@ RSpec.describe Brigitte::Game, type: :model do
           before do
             thrown = []
             game.cards.delete_if { |card| thrown << card if card.weight == game.cards.last.weight }
+            player.hand.clear
             player.hand.push(*thrown)
           end
 
@@ -193,38 +186,37 @@ RSpec.describe Brigitte::Game, type: :model do
           it 'throws card from hand' do
             thrown_cards = player.hand.dup
             game.throw_card(player, *thrown_cards)
-            expect(thrown_cards.all? { |card| !player.hand.include?(card) }).to be_truthy
-          end
 
-          it 'throws card on pot and empties it' do
-            thrown_cards = player.hand.dup
-            game.throw_card(player, *thrown_cards)
-            expect(game.pot.empty?).to be_truthy
+            expect(thrown_cards.all? { |card| !player.hand.include?(card) }).to be_truthy
           end
 
           it 'takes a card from decks of card' do
             thrown_cards = player.hand.dup
             top_cards_on_deck = game.cards.last(3)
             game.throw_card(player, *thrown_cards)
+
             expect(top_cards_on_deck.all? { |card| player.hand.include?(card) }).to be_truthy
           end
 
           it 'amount cards in hand is 3' do
             game.throw_card(player, *player.hand)
+
             expect(player.hand.count).to eq 3
           end
 
           it 'current_player stays the same as pot has been emptied by the player' do
-            current_player = game.current_player
+            amount_of_cards = player.hand.count
             game.throw_card(player, *player.hand)
-            expect(game.current_player).to eq current_player
+
+            expect(game.current_player).to eq player if amount_of_cards == 4
           end
         end
         context 'different weight' do
           before do
-            player.hand << game.cards.select { |card| card.weight == 2 }.first
-            player.hand << game.cards.select { |card| card.weight == 3 }.first
-            player.hand << game.cards.select { |card| card.weight == 4 }.first
+            player.hand.clear
+            player.hand << game.cards.pop
+            player.hand << game.cards.select { |card| card.weight != player.hand.last.weight }.first
+            player.hand << game.cards.select { |card| card.weight != player.hand.last.weight }.first
           end
 
           it 'returns false' do
@@ -247,6 +239,7 @@ RSpec.describe Brigitte::Game, type: :model do
           it 'current_player stays the same' do
             current_player = game.current_player
             game.throw_card(player, *player.hand)
+
             expect(game.current_player).to eq current_player
           end
         end
@@ -254,7 +247,6 @@ RSpec.describe Brigitte::Game, type: :model do
     end
     context 'when only one card left on table' do
       before do
-        game.deal_cards
         game.active_players.each(&:ready!)
         game.cards.shift(game.cards.count - 1)
         game.play
@@ -301,7 +293,6 @@ RSpec.describe Brigitte::Game, type: :model do
     end
     context 'when there are no cards left on table' do
       before do
-        game.deal_cards
         game.active_players.each(&:ready!)
         game.cards.clear
         game.play
@@ -409,6 +400,15 @@ RSpec.describe Brigitte::Game, type: :model do
           end
         end
       end
+    end
+  end
+
+  describe 'serialisation' do
+    it 'gives same content after deserialising on a new game' do
+      game = described_class.new.start_new_game(*player_names)
+      h = game.to_h
+
+      expect(described_class.from_h(h).to_h).to eq(h)
     end
   end
 end

@@ -2,23 +2,24 @@
 
 module Brigitte
   class Game
-    attr_reader :active_players, :cards, :pot, :removed_cards, :current_player, :won_players, :game_over
+    attr_writer :current_player, :game_over
+    attr_reader :active_players, :cards, :pot, :current_player, :removed_cards, :won_players, :game_over
 
-    def initialize(*player_names)
-      @active_players = player_names.map { |pn| Player.new(pn) }
-      @cards = Deck.new.cards
+    def initialize
+      @active_players = []
+      @cards = []
       @pot = []
       @removed_cards = []
       @won_players = []
       @game_over = false
     end
 
-    def deal_cards
-      @active_players.each do |player|
-        3.times { player.hidden_cards << @cards.pop }
-        3.times { player.visible_cards << @cards.pop }
-        3.times { player.hand << @cards.pop }
-      end
+    def start_new_game(*player_names)
+      player_names.each { |pn| @active_players << Player.new(pn) }
+      @cards = Deck.new.cards
+      deal_cards
+
+      self
     end
 
     def play
@@ -49,7 +50,40 @@ module Brigitte
       success
     end
 
+    def to_h
+      {
+        active_players: active_players.map(&:to_h),
+        cards: cards.map(&:to_h),
+        pot: pot.map(&:to_h),
+        removed_cards: removed_cards.map(&:to_h),
+        current_player: current_player.to_h,
+        won_players: won_players.map(&:to_h),
+        game_over: game_over
+      }
+    end
+
+    def self.from_h(game_hash)
+      game = new
+      game_hash[:active_players].each { |h| game.active_players << Player.from_h(h) }
+      game_hash[:cards].each { |h| game.cards << Card.from_h(h) }
+      game_hash[:pot].each { |h| game.pot << Card.from_h(h) }
+      game_hash[:removed_cards].each { |h| game.removed_cards << Card.from_h(h) }
+      game.current_player = Player.from_h(game_hash[:current_player])
+      game_hash[:won_players].each { |h| game.won_players << Player.from_h(h) }
+      game.game_over = game_hash[:game_over]
+
+      game
+    end
+
     private
+
+      def deal_cards
+        @active_players.each do |player|
+          3.times { player.hidden_cards << @cards.pop }
+          3.times { player.visible_cards << @cards.pop }
+          3.times { player.hand << @cards.pop }
+        end
+      end
 
       def take_cards(player)
         return if @cards.empty?

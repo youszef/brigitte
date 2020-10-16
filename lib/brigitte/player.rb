@@ -7,8 +7,8 @@ module Brigitte
     attr_accessor :name, :hand, :hidden_cards, :visible_cards, :ready
     attr_reader :id
 
-    def initialize(name)
-      @id = SecureRandom.uuid
+    def initialize(name, id=nil)
+      @id = id || SecureRandom.uuid
       @name = name
       @hand = []
       @hidden_cards = []
@@ -52,6 +52,33 @@ module Brigitte
 
     def throw(card)
       hand.delete(card)
+    end
+
+    def to_h
+      {
+        id: id,
+        name: name,
+        hand: hand.map(&:to_h),
+        hidden_cards: hidden_cards.map(&:to_h),
+        visible_cards: visible_cards.map(&:to_h),
+        ready: ready
+      }
+    end
+
+    def self.from_h(player_hash)
+      return if player_hash.empty?
+
+      player = new(
+        player_hash[:name],
+        player_hash[:id]
+      )
+
+      player.hand = player_hash[:hand].map{ |h| Card.from_h(h) }
+      player.hidden_cards = player_hash[:hidden_cards].map{ |h| Card.from_h(h) }
+      player.visible_cards = player_hash[:visible_cards].map{ |h| Card.from_h(h) }
+      player.ready = player_hash[:ready]
+
+      player
     end
   end
 end

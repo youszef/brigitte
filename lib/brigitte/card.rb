@@ -6,8 +6,8 @@ module Brigitte
   class Card
     include Comparable
     attr_reader :id, :value, :sign
-    def initialize(value, sign)
-      @id = SecureRandom.uuid
+    def initialize(value, sign, id=nil)
+      @id = id || SecureRandom.uuid
       @value = value
       @sign = sign
     end
@@ -27,6 +27,24 @@ module Brigitte
       return 14 if @value == 'A'
 
       value.to_i
+    end
+
+    def to_h
+      {
+        id: id,
+        value: value,
+        sign: sign
+      }
+    end
+
+    def self.from_h(card_hash)
+      return if card_hash.empty?
+
+      new(
+        card_hash[:value],
+        card_hash[:sign],
+        card_hash[:id]
+      )
     end
   end
 end
