@@ -12,3 +12,6 @@
 
 # IJ IDE
 .idea
+
+# local ENVS
+exports

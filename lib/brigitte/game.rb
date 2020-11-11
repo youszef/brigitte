@@ -14,8 +14,31 @@ module Brigitte
       @game_over = false
     end
 
-    def start_new_game(*player_names)
-      player_names.each { |pn| @active_players << Player.new(pn) }
+    ##
+    # Starts the game with the provided +players+.
+    # Returns this Game instance.
+    #
+    # +players+ - An array containing player names. Default strings of names.
+    #
+    # ==== Optional arguments
+    # * If players is an array of hashes.
+    # * +:player_name_key+ - The key in players of player name.
+    # * +:player_id_key+ - The key in players of player id.
+    #
+    # ===== Examples
+    #   start_new_game(['Bell', 'Biv', 'Devoe'])
+    #
+    #   start_new_game([{ name: 'Bell', id: 1 }, { name: 'Biv', id: 2 }, { name: 'Devoe', id: 3 }],
+    #                   player_name_key: :name,
+    #                   player_id_key: :id
+    #                 )
+
+    def start_new_game(players, args = {})
+      if args.empty?
+        players.each { |pn| @active_players << Player.new(pn) }
+      else
+        players.each { |p| @active_players << Player.new(p[args[:player_name_key]], p[args[:player_id_key]]) }
+      end
       @cards = Deck.new.cards
       deal_cards
 

@@ -6,19 +6,49 @@ RSpec.describe Brigitte::Game, type: :model do
   let(:player_names) { %w[player1 player2 player3] }
 
   describe '#initialize' do
-    it 'sets active_players' do
-      game = described_class.new.start_new_game(*player_names)
-      expect(game.active_players.map(&:name)).to eq player_names
-    end
+    it 'initializes all attributes' do
+      game = described_class.new
 
-    it 'sets new deck of cards' do
-      game = described_class.new.start_new_game(*player_names)
-      expect(game.cards.all? { |card| card.is_a? Brigitte::Card }).to be_truthy
-      expect(game.cards.count).to eq(52 - (game.active_players.count * 9))
+      expect(game.active_players).to eq []
+      expect(game.cards).to eq []
+      expect(game.pot).to eq []
+      expect(game.removed_cards).to eq []
+      expect(game.won_players).to eq []
+      expect(game.game_over).to be_falsey
     end
   end
+
+  describe '#start_new_game' do
+    context 'when array of player names string' do
+      it 'sets active_players' do
+        game = described_class.new.start_new_game(player_names)
+        expect(game.active_players.map(&:name)).to eq player_names
+      end
+
+      it 'sets new deck of cards' do
+        game = described_class.new.start_new_game(player_names)
+        expect(game.cards.all? { |card| card.is_a? Brigitte::Card }).to be_truthy
+        expect(game.cards.count).to eq(52 - (game.active_players.count * 9))
+      end
+    end
+    context 'when array of player hash' do
+      let(:player_hashes) { [{ name: 'Bell', id: 1 }, { name: 'Biv', id: 2 }, { name: 'Devoe', id: 3 }] }
+
+      it 'sets active_players' do
+        game = described_class.new.start_new_game(player_hashes, player_name_key: :name, player_id_key: :id)
+        expect(game.active_players.map(&:name)).to eq player_hashes.map{ |p| p[:name] }
+      end
+
+      it 'sets new deck of cards' do
+        game = described_class.new.start_new_game(player_hashes, player_name_key: :name, player_id_key: :id)
+        expect(game.cards.all? { |card| card.is_a? Brigitte::Card }).to be_truthy
+        expect(game.cards.count).to eq(52 - (game.active_players.count * 9))
+      end
+    end
+  end
+
   describe '#deal_cards' do
-    let(:game) { described_class.new.start_new_game(*player_names) }
+    let(:game) { described_class.new.start_new_game(player_names) }
 
     it 'gives each user 3 hidden cards' do
       expect(game.active_players.all? { |player| player.hidden_cards.count == 3 }).to be_truthy
@@ -32,7 +62,7 @@ RSpec.describe Brigitte::Game, type: :model do
   end
   describe '#play' do
     context 'when not all active_players are ready' do
-      let(:game) { described_class.new.start_new_game(*player_names) }
+      let(:game) { described_class.new.start_new_game(player_names) }
 
       before do
         game.active_players.first.ready!
@@ -46,7 +76,7 @@ RSpec.describe Brigitte::Game, type: :model do
       end
     end
     context 'when all active_players are ready' do
-      let(:game) { described_class.new.start_new_game(*player_names) }
+      let(:game) { described_class.new.start_new_game(player_names) }
 
       before do
         game.active_players.each(&:ready!)
@@ -62,7 +92,7 @@ RSpec.describe Brigitte::Game, type: :model do
     end
   end
   describe '#throw_card' do
-    let(:game) { described_class.new.start_new_game(*player_names) }
+    let(:game) { described_class.new.start_new_game(player_names) }
 
     context 'when player who is not in turn throws card' do
       before do
@@ -405,7 +435,7 @@ RSpec.describe Brigitte::Game, type: :model do
 
   describe 'serialisation' do
     it 'gives same content after deserialising on a new game' do
-      game = described_class.new.start_new_game(*player_names)
+      game = described_class.new.start_new_game(player_names)
       h = game.to_h
 
       expect(described_class.from_h(h).to_h).to eq(h)
