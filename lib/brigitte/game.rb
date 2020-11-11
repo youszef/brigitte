@@ -21,9 +21,9 @@ module Brigitte
     # +players+ - An array containing player names. Default strings of names.
     #
     # ==== Optional arguments
-    # * If players is an array of hashes.
-    # * +:player_name_key+ - The key in players of player name.
-    # * +:player_id_key+ - The key in players of player id.
+    # * If +players+ is an array of hashes.
+    # * +:player_name_key+ - The key of name in player hash.
+    # * +:player_id_key+ - The key of id in player hash.
     #
     # ===== Examples
     #   start_new_game(['Bell', 'Biv', 'Devoe'])

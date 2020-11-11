@@ -37,6 +37,7 @@ RSpec.describe Brigitte::Game, type: :model do
       it 'sets active_players' do
         game = described_class.new.start_new_game(player_hashes, player_name_key: :name, player_id_key: :id)
         expect(game.active_players.map(&:name)).to eq player_hashes.map{ |p| p[:name] }
+        expect(game.active_players.map(&:id)).to eq player_hashes.map{ |p| p[:id] }
       end
 
       it 'sets new deck of cards' do
