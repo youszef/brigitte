@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'player'
+require_relative 'card'
+require_relative 'deck'
+require_relative 'commands/pot'
+
 module Brigitte
   class Game
     attr_writer :current_player, :game_over
