@@ -37,7 +37,6 @@ module Brigitte
     #                   player_name_key: :name,
     #                   player_id_key: :id
     #                 )
-
     def start_new_game(players, args = {})
       if args.empty?
         players.each { |pn| @active_players << Player.new(pn) }

@@ -36,8 +36,8 @@ module Brigitte
       return unless hand_card_index
       return unless visible_card_index
 
-      visible_cards << hand.delete_at(hand_card_index)
-      hand << visible_cards.delete_at(visible_card_index)
+      visible_cards[visible_card_index] = hand_card
+      hand[hand_card_index] = visible_card
     end
 
     def pull_hidden_card(index)
