@@ -26,7 +26,7 @@ module Brigitte
     end
 
     def ==(other)
-      id == other.id
+      id == other&.id
     end
 
     def swap(hand_card, visible_card)
