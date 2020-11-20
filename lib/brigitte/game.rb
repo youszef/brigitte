@@ -37,7 +37,6 @@ module Brigitte
     #                   player_name_key: :name,
     #                   player_id_key: :id
     #                 )
-
     def start_new_game(players, args = {})
       if args.empty?
         players.each { |pn| @active_players << Player.new(pn) }
@@ -51,7 +50,7 @@ module Brigitte
     end
 
     def play
-      return false unless @active_players.map(&:ready).all?
+      return false unless @active_players.all?(&:ready)
 
       @current_player ||= @active_players.min { |player1, player2| player1.hand.map(&:weight).min <=> player2.hand.map(&:weight).min }
     end
@@ -118,6 +117,7 @@ module Brigitte
         return if player.hand.count >= 3
 
         player.hand.push(*@cards.pop(3 - player.hand.count))
+        player.sort_hand!
       end
 
       def take_visible_cards(player)
@@ -125,6 +125,7 @@ module Brigitte
         return if player.hand.any?
 
         player.hand.push(*player.visible_cards.pop(player.visible_cards.count))
+        player.sort_hand!
       end
 
       def take_hidden_card(player, hidden_card_index)
