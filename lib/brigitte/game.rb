@@ -158,7 +158,7 @@ module Brigitte
         remaining_players = @active_players.reject{ |active_player| @won_players.include? active_player }
         return if remaining_players.count > 1
 
-        @won_players << remaining_players.first
+        @won_players << remaining_players.first if remaining_players.first
         @game_over = true
       end
 
