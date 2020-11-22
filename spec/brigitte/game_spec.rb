@@ -52,7 +52,7 @@ RSpec.describe Brigitte::Game, type: :model do
     let(:game) { described_class.new.start_new_game(player_names) }
 
     it 'gives each user 3 hidden cards' do
-      expect(game.active_players.all? { |player| player.hidden_cards.count == 3 }).to be_truthy
+      expect(game.active_players.all? { |player| player.hidden_cards.compact.count == 3 }).to be_truthy
     end
     it 'gives each user 3 visible cards' do
       expect(game.active_players.all? { |player| player.visible_cards.count == 3 }).to be_truthy
@@ -502,7 +502,7 @@ RSpec.describe Brigitte::Game, type: :model do
             taken_hidden_card = player.hidden_cards[1]
             game.take_hidden_card(player, 1)
 
-            expect(player.hidden_cards.count).to eq 2
+            expect(player.hidden_cards.compact.count).to eq 2
             expect(player.hand).to include(taken_hidden_card)
           end
         end
@@ -511,7 +511,7 @@ RSpec.describe Brigitte::Game, type: :model do
             taken_hidden_card = player.hidden_cards[1]
             game.take_hidden_card(player, 1)
 
-            expect(player.hidden_cards.count).to eq 3
+            expect(player.hidden_cards.compact.count).to eq 3
             expect(player.hand).not_to include(taken_hidden_card)
           end
         end
@@ -521,7 +521,7 @@ RSpec.describe Brigitte::Game, type: :model do
           taken_hidden_card = player.hidden_cards[1]
           game.take_hidden_card(player, 1)
 
-          expect(player.hidden_cards.count).to eq 3
+          expect(player.hidden_cards.compact.count).to eq 3
           expect(player.hand).not_to include(taken_hidden_card)
         end
       end
@@ -531,7 +531,7 @@ RSpec.describe Brigitte::Game, type: :model do
         taken_hidden_card = player.hidden_cards[1]
         game.take_hidden_card(player, 1)
 
-        expect(player.hidden_cards.count).to eq 3
+        expect(player.hidden_cards.compact.count).to eq 3
         expect(player.hand).not_to include(taken_hidden_card)
       end
     end

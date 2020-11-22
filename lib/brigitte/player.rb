@@ -48,7 +48,8 @@ module Brigitte
       hidden_card = hidden_cards[index]
       return false unless hidden_card
 
-      hand << hidden_cards.delete_at(index)
+      hidden_cards[index] = nil
+      hand << hidden_card
       sort_hand!
       true
     end

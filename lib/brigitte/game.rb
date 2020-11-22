@@ -65,7 +65,7 @@ module Brigitte
           take_cards(player)
         elsif player.visible_cards.any?
           take_visible_cards(player)
-        elsif player.hidden_cards.empty? && player.hand.empty?
+        elsif player.hidden_cards.compact.empty? && player.hand.empty?
           @won_players << player
           check_and_set_game_over
         end

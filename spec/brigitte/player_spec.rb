@@ -79,7 +79,7 @@ RSpec.describe Brigitte::Player, type: :model do
       end
       it 'does not pull card' do
         player.pull_hidden_card(0)
-        expect(player.hidden_cards.count).to eq 3
+        expect(player.hidden_cards.compact.count).to eq 3
       end
     end
     context 'when there are still cards in hand' do
@@ -88,13 +88,21 @@ RSpec.describe Brigitte::Player, type: :model do
       end
       it 'does not pull card' do
         player.pull_hidden_card(0)
-        expect(player.hidden_cards.count).to eq 3
+        expect(player.hidden_cards.compact.count).to eq 3
       end
     end
     context 'when hidden cards are available' do
       it 'pulls only one card' do
         player.pull_hidden_card(0)
-        expect(player.hidden_cards.count).to eq 2
+        expect(player.hidden_cards.compact.count).to eq 2
+      end
+
+      it 'keeps other cards at the same index' do
+        last_hidden_card = player.hidden_cards.last
+        player.pull_hidden_card(1)
+
+        expect(player.hidden_cards[1]).to be_nil
+        expect(player.hidden_cards[2]).to eq last_hidden_card
       end
     end
   end
