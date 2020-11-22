@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 
-RSpec.describe Brigitte::Commands::Pot::AddCard do
+RSpec.describe Brigitte::Commands::Pot::AddCards do
   let(:cards) { [] }
 
   describe '#process' do

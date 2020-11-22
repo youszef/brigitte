@@ -3,7 +3,7 @@
 module Brigitte
   module Commands
     module Pot
-      class AddCard
+      class AddCards
         class << self
           def process(player, cards, pot, removed_cards = [])
             if valid?(player, cards, pot)

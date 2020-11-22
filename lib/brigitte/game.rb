@@ -55,10 +55,10 @@ module Brigitte
       @current_player ||= @active_players.min { |player1, player2| player1.hand.map(&:weight).min <=> player2.hand.map(&:weight).min }
     end
 
-    def throw_card(player, *thrown_cards, hidden_card_index: nil)
+    def throw_cards(player, *thrown_cards, hidden_card_index: nil)
       return false unless player == @current_player
 
-      success = Commands::Pot::AddCard.process(player, thrown_cards, @pot, @removed_cards)
+      success = Commands::Pot::AddCards.process(player, thrown_cards, @pot, @removed_cards)
 
       if success
         if @cards.any?
@@ -75,6 +75,15 @@ module Brigitte
         set_next_player unless @game_over
       end
       success
+    end
+
+    def take_cards_from_pot(player)
+      return false unless player == @current_player
+
+      player.hand.push(*@pot.pop(@pot.count))
+      player.sort_hand!
+
+      set_next_player(true) unless @game_over
     end
 
     def to_h
@@ -135,8 +144,8 @@ module Brigitte
         player.pull_hidden_card(hidden_card_index)
       end
 
-      def set_next_player
-        return if player_can_throw_again?(@current_player)
+      def set_next_player(force=false)
+        return if !force && player_can_throw_again?(@current_player)
 
         current_player_index = @active_players.index(@current_player)
         next_player_index = (current_player_index + 1) % @active_players.count

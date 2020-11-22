@@ -92,7 +92,7 @@ RSpec.describe Brigitte::Game, type: :model do
       end
     end
   end
-  describe '#throw_card' do
+  describe '#throw_cards' do
     let(:game) { described_class.new.start_new_game(player_names) }
 
     context 'when player who is not in turn throws card' do
@@ -104,24 +104,24 @@ RSpec.describe Brigitte::Game, type: :model do
       let(:player) { game.active_players.reject { |player| game.current_player == player }.first }
 
       it 'returns false' do
-        expect(game.throw_card(player, player.hand.first)).to be_falsey
+        expect(game.throw_cards(player, player.hand.first)).to be_falsey
       end
 
       it 'does not throw card' do
         thrown_card = player.hand.first
-        game.throw_card(player, thrown_card)
+        game.throw_cards(player, thrown_card)
         expect(player.hand.include?(thrown_card)).to be_truthy
       end
 
       it 'does not take a card from deck of cards' do
         top_card_on_deck = game.cards.last
-        game.throw_card(player, player.hand.first)
+        game.throw_cards(player, player.hand.first)
         expect(player.hand.include?(top_card_on_deck)).to be_falsey
       end
 
       it 'current_player stays the same' do
         current_player = game.current_player
-        game.throw_card(player, player.hand.first)
+        game.throw_cards(player, player.hand.first)
         expect(game.current_player).to eq current_player
       end
     end
@@ -134,24 +134,24 @@ RSpec.describe Brigitte::Game, type: :model do
       let(:player) { game.current_player }
 
       it 'returns false' do
-        expect(game.throw_card(player, player.visible_cards.first)).to be_falsey
+        expect(game.throw_cards(player, player.visible_cards.first)).to be_falsey
       end
 
       it 'does not throw card' do
         thrown_card = player.visible_cards.first
-        game.throw_card(player, thrown_card)
+        game.throw_cards(player, thrown_card)
         expect(player.visible_cards.include?(thrown_card)).to be_truthy
       end
 
       it 'does not take a card from deck of cards' do
         top_card_on_deck = game.cards.last
-        game.throw_card(player, player.visible_cards.first)
+        game.throw_cards(player, player.visible_cards.first)
         expect(player.hand.include?(top_card_on_deck)).to be_falsey
       end
 
       it 'current_player stays the same' do
         current_player = game.current_player
-        game.throw_card(player, player.visible_cards.first)
+        game.throw_cards(player, player.visible_cards.first)
         expect(game.current_player).to eq current_player
       end
     end
@@ -165,29 +165,29 @@ RSpec.describe Brigitte::Game, type: :model do
         end
 
         it 'returns true' do
-          expect(game.throw_card(player, player.hand.first)).to be_truthy
+          expect(game.throw_cards(player, player.hand.first)).to be_truthy
         end
 
         it 'throws card from hand' do
           thrown_card = player.hand.first
-          game.throw_card(player, thrown_card)
+          game.throw_cards(player, thrown_card)
           expect(player.hand.include?(thrown_card)).to be_falsey
         end
 
         it 'takes a card from decks of card' do
           top_card_on_deck = game.cards.last
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
           expect(player.hand.include?(top_card_on_deck)).to be_truthy
         end
 
         it 'amount cards in hand is 3' do
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
           expect(player.hand.count).to eq 3
         end
 
         it 'next player is now in turn when pot is not empty' do
           next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
           if game.pot.any?
             expect(game.current_player).to eq next_player
           else
@@ -211,12 +211,12 @@ RSpec.describe Brigitte::Game, type: :model do
           end
 
           it 'returns true' do
-            expect(game.throw_card(player, *player.hand)).to be_truthy
+            expect(game.throw_cards(player, *player.hand)).to be_truthy
           end
 
           it 'throws card from hand' do
             thrown_cards = player.hand.dup
-            game.throw_card(player, *thrown_cards)
+            game.throw_cards(player, *thrown_cards)
 
             expect(thrown_cards.all? { |card| !player.hand.include?(card) }).to be_truthy
           end
@@ -224,20 +224,20 @@ RSpec.describe Brigitte::Game, type: :model do
           it 'takes a card from decks of card' do
             thrown_cards = player.hand.dup
             top_cards_on_deck = game.cards.last(3)
-            game.throw_card(player, *thrown_cards)
+            game.throw_cards(player, *thrown_cards)
 
             expect(top_cards_on_deck.all? { |card| player.hand.include?(card) }).to be_truthy
           end
 
           it 'amount cards in hand is 3' do
-            game.throw_card(player, *player.hand)
+            game.throw_cards(player, *player.hand)
 
             expect(player.hand.count).to eq 3
           end
 
           it 'current_player stays the same as pot has been emptied by the player' do
             amount_of_cards = player.hand.count
-            game.throw_card(player, *player.hand)
+            game.throw_cards(player, *player.hand)
 
             expect(game.current_player).to eq player if amount_of_cards == 4
           end
@@ -251,25 +251,25 @@ RSpec.describe Brigitte::Game, type: :model do
           end
 
           it 'returns false' do
-            expect(game.throw_card(player, *player.hand)).to be_falsey
+            expect(game.throw_cards(player, *player.hand)).to be_falsey
           end
 
           it 'does not throw card' do
             thrown_cards = player.hand.dup
-            game.throw_card(player, *thrown_cards)
+            game.throw_cards(player, *thrown_cards)
             expect(thrown_cards.all? { |card| player.hand.include?(card) }).to be_truthy
           end
 
           it 'does not take a card from deck of cards' do
             thrown_cards = player.hand.dup
             top_card_on_deck = game.cards.last
-            game.throw_card(player, *thrown_cards)
+            game.throw_cards(player, *thrown_cards)
             expect(player.hand.include?(top_card_on_deck)).to be_falsey
           end
 
           it 'current_player stays the same' do
             current_player = game.current_player
-            game.throw_card(player, *player.hand)
+            game.throw_cards(player, *player.hand)
 
             expect(game.current_player).to eq current_player
           end
@@ -291,29 +291,29 @@ RSpec.describe Brigitte::Game, type: :model do
         end
 
         it 'returns true' do
-          expect(game.throw_card(player, player.hand.first)).to be_truthy
+          expect(game.throw_cards(player, player.hand.first)).to be_truthy
         end
 
         it 'throws card from hand' do
           thrown_card = player.hand.first
-          game.throw_card(player, thrown_card)
+          game.throw_cards(player, thrown_card)
           expect(player.hand.include?(thrown_card)).to be_falsey
         end
 
         it 'takes a card from decks of card' do
           top_card_on_deck = game.cards.last
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
           expect(player.hand.include?(top_card_on_deck)).to be_truthy
         end
 
         it 'amount cards in hand is 1' do
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
           expect(player.hand.count).to eq 1
         end
 
         it 'next player is now in turn when pot is not empty' do
           next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
           if game.pot.any?
             expect(game.current_player).to eq next_player
           else
@@ -334,14 +334,14 @@ RSpec.describe Brigitte::Game, type: :model do
       context 'when player has 3 cards left in hand' do
         it 'throws card without needing to pick up card' do
           thrown_card = player.hand.first
-          game.throw_card(player, thrown_card)
+          game.throw_cards(player, thrown_card)
 
           expect(player.hand.include?(thrown_card)).to be_falsey
           expect(player.hand.count).to eq 2
         end
         it 'next player is in turn when pot is not empty' do
           next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-          game.throw_card(player, player.hand.first)
+          game.throw_cards(player, player.hand.first)
 
           if game.pot.any?
             expect(game.current_player).to eq next_player
@@ -357,7 +357,7 @@ RSpec.describe Brigitte::Game, type: :model do
         context 'when visible cards are available' do
           it 'takes all the visible cards into hand' do
             visible_cards = player.visible_cards
-            game.throw_card(player, player.hand.first)
+            game.throw_cards(player, player.hand.first)
 
             expect(player.hand.count).to eq 3
             expect(player.hand).to include(*visible_cards)
@@ -365,7 +365,7 @@ RSpec.describe Brigitte::Game, type: :model do
 
           it 'next player is in turn when pot is not empty' do
             next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-            game.throw_card(player, player.hand.first)
+            game.throw_cards(player, player.hand.first)
 
             if game.pot.any?
               expect(game.current_player).to eq next_player
@@ -381,7 +381,7 @@ RSpec.describe Brigitte::Game, type: :model do
 
           it 'takes second card from hidden cards in hand' do
             taken_hidden_card = player.hidden_cards[1]
-            game.throw_card(player, player.hand.first, hidden_card_index: 1)
+            game.throw_cards(player, player.hand.first, hidden_card_index: 1)
 
             expect(player.hidden_cards.count).to eq 2
             expect(player.hand).to include(taken_hidden_card)
@@ -389,7 +389,7 @@ RSpec.describe Brigitte::Game, type: :model do
 
           it 'next player is in turn when pot is not empty' do
             next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-            game.throw_card(player, player.hand.first, hidden_card_index: 1)
+            game.throw_cards(player, player.hand.first, hidden_card_index: 1)
 
             if game.pot.any?
               expect(game.current_player).to eq next_player
@@ -404,14 +404,14 @@ RSpec.describe Brigitte::Game, type: :model do
             end
 
             it 'adds it to won_players' do
-              game.throw_card(player, player.hand.first)
+              game.throw_cards(player, player.hand.first)
 
               expect(game.won_players.first).to eq player
             end
 
             it 'next player is now in turn' do
               next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-              game.throw_card(player, player.hand.first)
+              game.throw_cards(player, player.hand.first)
 
               expect(game.current_player).to eq next_player
             end
@@ -424,7 +424,7 @@ RSpec.describe Brigitte::Game, type: :model do
             end
 
             it 'is game over' do
-              game.throw_card(player, player.hand.first)
+              game.throw_cards(player, player.hand.first)
 
               expect(game.game_over).to be_truthy
             end
@@ -433,7 +433,51 @@ RSpec.describe Brigitte::Game, type: :model do
       end
     end
   end
+  describe '#take_cards_from_pot' do
+    let(:game) { described_class.new.start_new_game(player_names) }
 
+    before do
+      game.active_players.each(&:ready!)
+      game.play
+      game.pot.push(*game.cards.pop(3))
+    end
+
+    context 'when player in turn' do
+      let(:player) { game.current_player }
+
+      it 'takes all the cards from pot in hand' do
+        cards_in_pot = game.pot
+        game.take_cards_from_pot(player)
+
+        expect(game.pot).to be_empty
+        expect(player.hand).to include(*cards_in_pot)
+      end
+
+      it 'next player is in turn after taking cards' do
+        game.take_cards_from_pot(player)
+
+        expect(game.current_player).not_to eq player
+      end
+    end
+    context 'when player not in turn' do
+      let(:player) { game.active_players.reject { |player| game.current_player == player }.first }
+
+      it 'does not take the cards from pot' do
+        cards_in_pot = game.pot
+        game.take_cards_from_pot(player)
+
+        expect(game.pot).not_to be_empty
+        expect(player.hand).not_to include(*cards_in_pot)
+      end
+
+      it 'same player is still in turn' do
+        initial_current_player = game.current_player
+        game.take_cards_from_pot(player)
+
+        expect(game.current_player).to eq initial_current_player
+      end
+    end
+  end
   describe 'serialisation' do
     it 'gives same content after deserialising on a new game' do
       game = described_class.new.start_new_game(player_names)
