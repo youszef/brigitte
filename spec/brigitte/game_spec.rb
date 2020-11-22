@@ -409,10 +409,10 @@ RSpec.describe Brigitte::Game, type: :model do
             end
           end
           context 'when second to last player throws its last card' do
-
             before do
               player.hidden_cards.clear
-              game.won_players << game.active_players.reject{ |p| p == game.current_player }.first
+              # force new object same id to test object are compared on id instead of instance ref
+              game.won_players << Brigitte::Player.from_h(game.active_players.reject{ |p| p == game.current_player }.first.to_h)
             end
 
             it 'is game over' do

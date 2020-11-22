@@ -155,7 +155,7 @@ module Brigitte
       end
 
       def check_and_set_game_over
-        remaining_players = @active_players - @won_players
+        remaining_players = @active_players.reject{ |active_player| @won_players.include? active_player }
         return if remaining_players.count > 1
 
         @won_players << remaining_players.first
