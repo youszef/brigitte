@@ -42,14 +42,15 @@ module Brigitte
     end
 
     def pull_hidden_card(index)
-      return if hand.any?
-      return if visible_cards.any?
+      return false if hand.any?
+      return false if visible_cards.any?
 
       hidden_card = hidden_cards[index]
-      return unless hidden_card
+      return false unless hidden_card
 
       hand << hidden_cards.delete_at(index)
       sort_hand!
+      true
     end
 
     def throw(card)

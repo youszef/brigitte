@@ -379,17 +379,9 @@ RSpec.describe Brigitte::Game, type: :model do
             player.visible_cards.clear
           end
 
-          it 'takes second card from hidden cards in hand' do
-            taken_hidden_card = player.hidden_cards[1]
-            game.throw_cards(player, player.hand.first, hidden_card_index: 1)
-
-            expect(player.hidden_cards.count).to eq 2
-            expect(player.hand).to include(taken_hidden_card)
-          end
-
           it 'next player is in turn when pot is not empty' do
             next_player = game.active_players[(game.active_players.index(game.current_player) + 1) % game.active_players.count]
-            game.throw_cards(player, player.hand.first, hidden_card_index: 1)
+            game.throw_cards(player, player.hand.first)
 
             if game.pot.any?
               expect(game.current_player).to eq next_player
@@ -484,6 +476,64 @@ RSpec.describe Brigitte::Game, type: :model do
       h = game.to_h
 
       expect(described_class.from_h(h).to_h).to eq(h)
+    end
+  end
+
+  describe '#take_hidden_card' do
+    let(:game) { described_class.new.start_new_game(player_names) }
+    let(:player) { game.active_players.each(&:ready!); game.play }
+
+    context 'when cards are empty' do
+      before do
+        game.cards.clear
+      end
+
+      context 'when visible cards are empty' do
+        before do
+          player.visible_cards.clear
+        end
+
+        context 'when hand is empty' do
+          before do
+            player.hand.clear
+          end
+
+          it 'takes second card from hidden cards in hand' do
+            taken_hidden_card = player.hidden_cards[1]
+            game.take_hidden_card(player, 1)
+
+            expect(player.hidden_cards.count).to eq 2
+            expect(player.hand).to include(taken_hidden_card)
+          end
+        end
+        context 'when hand not empty' do
+          it 'does not take hidden card in hand' do
+            taken_hidden_card = player.hidden_cards[1]
+            game.take_hidden_card(player, 1)
+
+            expect(player.hidden_cards.count).to eq 3
+            expect(player.hand).not_to include(taken_hidden_card)
+          end
+        end
+      end
+      context 'when visible cards not empty' do
+        it 'does not take hidden card in hand' do
+          taken_hidden_card = player.hidden_cards[1]
+          game.take_hidden_card(player, 1)
+
+          expect(player.hidden_cards.count).to eq 3
+          expect(player.hand).not_to include(taken_hidden_card)
+        end
+      end
+    end
+    context 'when cards not empty' do
+      it 'does not take hidden card in hand' do
+        taken_hidden_card = player.hidden_cards[1]
+        game.take_hidden_card(player, 1)
+
+        expect(player.hidden_cards.count).to eq 3
+        expect(player.hand).not_to include(taken_hidden_card)
+      end
     end
   end
 end

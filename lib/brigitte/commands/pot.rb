@@ -22,7 +22,7 @@ module Brigitte
             return false unless cards.all? { |card| player.hand.include?(card) }
             return false unless cards.uniq(&:weight).count == 1 # all cards are equal
             return true if pot.empty?
-            return true if [2, 10].include?(cards.first.weight)
+            return true if [2, 10].include?(cards.first.weight) # wild cards
             return cards.first.weight <= pot.last.weight if pot.last.weight == 7
 
             cards.first.weight >= pot.last.weight
