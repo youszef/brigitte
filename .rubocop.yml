@@ -1,0 +1,48 @@
+---
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.7
+  Exclude:
+    - 'db/**/*'
+    - 'node_modules/**/*'
+    - 'bin/*'
+Style/Documentation:
+  Enabled: true
+Metrics/ModuleLength:
+  Enabled: true
+Metrics/ClassLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: true
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - 'config/initializers/inflections.rb'
+    - 'config/routes.rb'
+    - 'lib/tasks/**/*'
+    - 'Rakefile'
+    - 'spec/**/*'
+Layout/LineLength:
+  Enabled: true
+  Max: 80
+  Exclude:
+    - "**/*_spec.rb"
+    - "**/*_spec.rb"
+    - "brigitte.gemspec"
+Metrics/AbcSize:
+  Enabled: true
+Metrics/PerceivedComplexity:
+  Enabled: true
+Metrics/CyclomaticComplexity:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
