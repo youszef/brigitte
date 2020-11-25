@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] 2020-11-26
+
+### Changed
+
+- gem-push flow fix
+
 ## [0.1.1] 2020-11-26
 
 ### Changed
