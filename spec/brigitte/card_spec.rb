@@ -12,8 +12,6 @@ RSpec.describe Brigitte::Card, type: :model do
       expect(card.id).not_to eq ''
     end
   end
-  describe '#<=>' do
-  end
   describe '#to_s' do
     it 'merges value with sign as a string' do
       expect(ace_card_club_suit.to_s).to eq 'A♣'

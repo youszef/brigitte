@@ -1,17 +1,18 @@
 ---
 
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 2.7
   Exclude:
     - 'db/**/*'
     - 'node_modules/**/*'
     - 'bin/*'
 Style/Documentation:
-  Enabled: false
+  Enabled: true
 Metrics/ModuleLength:
   Enabled: true
 Metrics/ClassLength:
-  Enabled: true
+  Enabled: false
 Metrics/MethodLength:
   Enabled: true
 Metrics/BlockLength:
@@ -24,7 +25,11 @@ Metrics/BlockLength:
     - 'spec/**/*'
 Layout/LineLength:
   Enabled: true
-  Max: 120
+  Max: 80
+  Exclude:
+    - "**/*_spec.rb"
+    - "**/*_spec.rb"
+    - "brigitte.gemspec"
 Metrics/AbcSize:
   Enabled: true
 Metrics/PerceivedComplexity:

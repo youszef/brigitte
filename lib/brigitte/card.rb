@@ -3,10 +3,17 @@
 require 'securerandom'
 
 module Brigitte
+  #
+  # A Card has a value and sign defined separately.
+  #
+  # Note:
+  # Compare cards' value with their +weight+.
+  # Cards are only equal if their id's are the same.
   class Card
     include Comparable
     attr_reader :id, :value, :sign
-    def initialize(value, sign, id=nil)
+
+    def initialize(value, sign, id = nil)
       @id = id || SecureRandom.uuid
       @value = value
       @sign = sign

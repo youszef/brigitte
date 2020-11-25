@@ -3,17 +3,28 @@
 require 'securerandom'
 
 module Brigitte
+  #
+  # A Player in Brigitte has a:
+  # +hand+ where from player can only throw cards from
+  # +visible_cards+ where from player can draw from if hands are empty
+  # +hidden_cards+ cards that are face down where from player can take only one
+  # if all cards are played
+  #
+  # A player is ready if cards are swapped between it's +hand+
+  # and +visible_cards+
   class Player
     attr_accessor :name, :hand, :hidden_cards, :visible_cards, :ready
     attr_reader :id
 
-    def initialize(name, id=nil)
+    def initialize(name, id = nil)
       @id = id || SecureRandom.uuid
       @name = name
       @hand = []
       @hidden_cards = []
       @visible_cards = []
       @ready = false
+
+      yield self if block_given?
     end
 
     def ready!
@@ -73,20 +84,15 @@ module Brigitte
       }
     end
 
-    def self.from_h(player_hash)
-      return if player_hash.empty?
+    def self.from_h(hash) # rubocop:disable Metrics/AbcSize
+      return if hash.empty?
 
-      player = new(
-        player_hash[:name],
-        player_hash[:id]
-      )
-
-      player.hand = player_hash[:hand].map{ |h| Card.from_h(h) }
-      player.hidden_cards = player_hash[:hidden_cards].map{ |h| Card.from_h(h) }
-      player.visible_cards = player_hash[:visible_cards].map{ |h| Card.from_h(h) }
-      player.ready = player_hash[:ready]
-
-      player
+      new(hash[:name], hash[:id]) do |p|
+        p.hand = hash[:hand].map { |h| Card.from_h(h) }
+        p.hidden_cards = hash[:hidden_cards].map { |h| Card.from_h(h) }
+        p.visible_cards = hash[:visible_cards].map { |h| Card.from_h(h) }
+        p.ready = hash[:ready]
+      end
     end
   end
 end
