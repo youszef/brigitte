@@ -8,6 +8,13 @@ require 'brigitte/game'
 require 'brigitte/card'
 require 'brigitte/deck'
 require 'brigitte/commands/pile'
+require 'simplecov'
+
+
+SimpleCov.minimum_coverage 100
+SimpleCov.start do
+  add_filter '/spec/'
+end
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

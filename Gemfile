@@ -6,5 +6,9 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake', '~> 12.0'
-gem 'rspec', '~> 3.0'
-gem 'rubocop', '~> 1.4'
+
+group :test do
+  gem 'rspec', '~> 3.0'
+  gem 'rubocop', '~> 1.4', require: false
+  gem 'simplecov', '~> 0.19', require: false
+end
