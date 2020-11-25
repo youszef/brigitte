@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.3] 2020-11-26
+
+ ### Changed
+
+ - gem-push flow cleanup and tryout
+
 ## [0.1.2] 2020-11-26
 
 ### Changed
