@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4] 2020-11-26
+
+ ### Changed
+
+ - renaming method to optimize clarity
+ - temporary remove changelog link from gemspec because of broken link
+
 ## [0.1.3] 2020-11-26
 
  ### Changed
