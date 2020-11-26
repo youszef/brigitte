@@ -429,7 +429,7 @@ RSpec.describe Brigitte::Game, type: :model do
       end
     end
   end
-  describe '#take_cards_from_pot' do
+  describe '#take_cards_from_pile' do
     let(:game) { described_class.new.start_new_game(player_names) }
 
     before do
@@ -443,14 +443,14 @@ RSpec.describe Brigitte::Game, type: :model do
 
       it 'takes all the cards from pile in hand' do
         cards_in_pot = game.pile
-        game.take_cards_from_pot(player)
+        game.take_cards_from_pile(player)
 
         expect(game.pile).to be_empty
         expect(player.hand).to include(*cards_in_pot)
       end
 
       it 'next player is in turn after taking cards' do
-        game.take_cards_from_pot(player)
+        game.take_cards_from_pile(player)
 
         expect(game.current_player).not_to eq player
       end
@@ -460,7 +460,7 @@ RSpec.describe Brigitte::Game, type: :model do
 
       it 'does not take the cards from pile' do
         cards_in_pot = game.pile
-        game.take_cards_from_pot(player)
+        game.take_cards_from_pile(player)
 
         expect(game.pile).not_to be_empty
         expect(player.hand).not_to include(*cards_in_pot)
@@ -468,7 +468,7 @@ RSpec.describe Brigitte::Game, type: :model do
 
       it 'same player is still in turn' do
         initial_current_player = game.current_player
-        game.take_cards_from_pot(player)
+        game.take_cards_from_pile(player)
 
         expect(game.current_player).to eq initial_current_player
       end

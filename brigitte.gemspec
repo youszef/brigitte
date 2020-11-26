@@ -9,14 +9,14 @@ Gem::Specification.new do |spec|
   spec.email         = ['zouhariy@gmail.com']
 
   spec.summary       = 'Card game based on Shithead'
-  spec.description   = "Card game where player need to lose all of it's cards"
+  spec.description   = "Card game where player needs to get rid of all it's cards"
   spec.homepage      = 'https://github.com/youszef/brigitte'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
-  spec.metadata['changelog_uri'] = "#{spec.homepage}/CHANGELOG.md"
+  # spec.metadata['changelog_uri'] = "#{spec.homepage}/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

@@ -84,7 +84,7 @@ module Brigitte
       true
     end
 
-    def take_cards_from_pot(player)
+    def take_cards_from_pile(player)
       return false unless player == @current_player
 
       player.hand.push(*@pile.pop(@pile.count))
