@@ -7,20 +7,20 @@ module Brigitte
   # A Player in Brigitte has a:
   # +hand+ where from player can only throw cards from
   # +visible_cards+ where from player can draw from if hands are empty
-  # +hidden_cards+ cards that are face down where from player can take only one
+  # +blind_cards+ cards that are face down where from player can take only one
   # if all cards are played
   #
   # A player is ready if cards are swapped between it's +hand+
   # and +visible_cards+
   class Player
-    attr_accessor :name, :hand, :hidden_cards, :visible_cards, :ready
+    attr_accessor :name, :hand, :blind_cards, :visible_cards, :ready
     attr_reader :id
 
     def initialize(name, id = nil)
       @id = id || SecureRandom.uuid
       @name = name
       @hand = []
-      @hidden_cards = []
+      @blind_cards = []
       @visible_cards = []
       @ready = false
 
@@ -52,15 +52,15 @@ module Brigitte
       hand[hand_card_index] = visible_card
     end
 
-    def pull_hidden_card(index)
+    def pull_blind_card(index)
       return false if hand.any?
       return false if visible_cards.any?
 
-      hidden_card = hidden_cards[index]
-      return false unless hidden_card
+      blind_card = blind_cards[index]
+      return false unless blind_card
 
-      hidden_cards[index] = nil
-      hand << hidden_card
+      blind_cards[index] = nil
+      hand << blind_card
       sort_hand!
       true
     end
@@ -78,7 +78,7 @@ module Brigitte
         id: id,
         name: name,
         hand: hand.map(&:to_h),
-        hidden_cards: hidden_cards.map(&:to_h),
+        blind_cards: blind_cards.map(&:to_h),
         visible_cards: visible_cards.map(&:to_h),
         ready: ready
       }
@@ -89,7 +89,7 @@ module Brigitte
 
       new(hash[:name], hash[:id]) do |p|
         p.hand = hash[:hand].map { |h| Card.from_h(h) }
-        p.hidden_cards = hash[:hidden_cards].map { |h| Card.from_h(h) }
+        p.blind_cards = hash[:blind_cards].map { |h| Card.from_h(h) }
         p.visible_cards = hash[:visible_cards].map { |h| Card.from_h(h) }
         p.ready = hash[:ready]
       end
