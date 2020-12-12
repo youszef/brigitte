@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.5] 2020-12-12
+
+### Changed
+
+- rename 'hidden_card' to more know term 'blind_card'
+
 ## [0.1.4] 2020-11-26
 
  ### Changed
