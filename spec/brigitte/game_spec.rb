@@ -51,8 +51,8 @@ RSpec.describe Brigitte::Game, type: :model do
   describe '#deal_cards' do
     let(:game) { described_class.new.start_new_game(player_names) }
 
-    it 'gives each user 3 hidden cards' do
-      expect(game.active_players.all? { |player| player.hidden_cards.compact.count == 3 }).to be_truthy
+    it 'gives each user 3 blind cards' do
+      expect(game.active_players.all? { |player| player.blind_cards.compact.count == 3 }).to be_truthy
     end
     it 'gives each user 3 visible cards' do
       expect(game.active_players.all? { |player| player.visible_cards.count == 3 }).to be_truthy
@@ -392,9 +392,9 @@ RSpec.describe Brigitte::Game, type: :model do
             end
           end
 
-          context 'hidden cards are empty' do
+          context 'blind cards are empty' do
             before do
-              player.hidden_cards.clear
+              player.blind_cards.clear
             end
 
             it 'adds it to winners' do
@@ -413,7 +413,7 @@ RSpec.describe Brigitte::Game, type: :model do
           end
           context 'when second to last player throws its last card' do
             before do
-              player.hidden_cards.clear
+              player.blind_cards.clear
               won_player = game.active_players.reject { |p| p == game.current_player }.first
               # force new object same id to test object are compared on id instead of instance ref
               game.winners << Brigitte::Player.from_h(won_player.to_h)
@@ -483,7 +483,7 @@ RSpec.describe Brigitte::Game, type: :model do
     end
   end
 
-  describe '#take_hidden_card' do
+  describe '#take_blind_card' do
     let(:game) { described_class.new.start_new_game(player_names) }
     let(:player) do
       game.active_players.each(&:ready!)
@@ -505,41 +505,41 @@ RSpec.describe Brigitte::Game, type: :model do
             player.hand.clear
           end
 
-          it 'takes second card from hidden cards in hand' do
-            taken_hidden_card = player.hidden_cards[1]
-            game.take_hidden_card(player, 1)
+          it 'takes second card from blind cards in hand' do
+            taken_blind_card = player.blind_cards[1]
+            game.take_blind_card(player, 1)
 
-            expect(player.hidden_cards.compact.count).to eq 2
-            expect(player.hand).to include(taken_hidden_card)
+            expect(player.blind_cards.compact.count).to eq 2
+            expect(player.hand).to include(taken_blind_card)
           end
         end
         context 'when hand not empty' do
-          it 'does not take hidden card in hand' do
-            taken_hidden_card = player.hidden_cards[1]
-            game.take_hidden_card(player, 1)
+          it 'does not take blind card in hand' do
+            taken_blind_card = player.blind_cards[1]
+            game.take_blind_card(player, 1)
 
-            expect(player.hidden_cards.compact.count).to eq 3
-            expect(player.hand).not_to include(taken_hidden_card)
+            expect(player.blind_cards.compact.count).to eq 3
+            expect(player.hand).not_to include(taken_blind_card)
           end
         end
       end
       context 'when visible cards not empty' do
-        it 'does not take hidden card in hand' do
-          taken_hidden_card = player.hidden_cards[1]
-          game.take_hidden_card(player, 1)
+        it 'does not take blind card in hand' do
+          taken_blind_card = player.blind_cards[1]
+          game.take_blind_card(player, 1)
 
-          expect(player.hidden_cards.compact.count).to eq 3
-          expect(player.hand).not_to include(taken_hidden_card)
+          expect(player.blind_cards.compact.count).to eq 3
+          expect(player.hand).not_to include(taken_blind_card)
         end
       end
     end
     context 'when cards not empty' do
-      it 'does not take hidden card in hand' do
-        taken_hidden_card = player.hidden_cards[1]
-        game.take_hidden_card(player, 1)
+      it 'does not take blind card in hand' do
+        taken_blind_card = player.blind_cards[1]
+        game.take_blind_card(player, 1)
 
-        expect(player.hidden_cards.compact.count).to eq 3
-        expect(player.hand).not_to include(taken_hidden_card)
+        expect(player.blind_cards.compact.count).to eq 3
+        expect(player.hand).not_to include(taken_blind_card)
       end
     end
   end

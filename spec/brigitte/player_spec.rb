@@ -69,17 +69,17 @@ RSpec.describe Brigitte::Player, type: :model do
       expect(player.hand.index(card)).to be_nil
     end
   end
-  describe '#pull_hidden_card' do
+  describe '#pull_blind_card' do
     before do
-      player.hidden_cards = cards.pop(3)
+      player.blind_cards = cards.pop(3)
     end
     context 'when there are still visible cards on table' do
       before do
         player.visible_cards = cards.pop(3)
       end
       it 'does not pull card' do
-        player.pull_hidden_card(0)
-        expect(player.hidden_cards.compact.count).to eq 3
+        player.pull_blind_card(0)
+        expect(player.blind_cards.compact.count).to eq 3
       end
     end
     context 'when there are still cards in hand' do
@@ -87,22 +87,22 @@ RSpec.describe Brigitte::Player, type: :model do
         player.hand = cards.pop(1)
       end
       it 'does not pull card' do
-        player.pull_hidden_card(0)
-        expect(player.hidden_cards.compact.count).to eq 3
+        player.pull_blind_card(0)
+        expect(player.blind_cards.compact.count).to eq 3
       end
     end
-    context 'when hidden cards are available' do
+    context 'when blind cards are available' do
       it 'pulls only one card' do
-        player.pull_hidden_card(0)
-        expect(player.hidden_cards.compact.count).to eq 2
+        player.pull_blind_card(0)
+        expect(player.blind_cards.compact.count).to eq 2
       end
 
       it 'keeps other cards at the same index' do
-        last_hidden_card = player.hidden_cards.last
-        player.pull_hidden_card(1)
+        last_blind_card = player.blind_cards.last
+        player.pull_blind_card(1)
 
-        expect(player.hidden_cards[1]).to be_nil
-        expect(player.hidden_cards[2]).to eq last_hidden_card
+        expect(player.blind_cards[1]).to be_nil
+        expect(player.blind_cards[2]).to eq last_blind_card
       end
     end
   end

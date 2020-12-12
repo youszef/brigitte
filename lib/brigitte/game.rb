@@ -93,13 +93,13 @@ module Brigitte
       select_next_player(force: true) unless @game_over
     end
 
-    def take_hidden_card(player, hidden_card_index)
+    def take_blind_card(player, blind_card_index)
       return false if player != @current_player
       return false if @cards.any?
       return false if player.visible_cards.any?
       return false if player.hand.any?
 
-      player.pull_hidden_card(hidden_card_index)
+      player.pull_blind_card(blind_card_index)
     end
 
     def to_h
@@ -131,7 +131,7 @@ module Brigitte
 
     def deal_cards
       @active_players.each do |player|
-        3.times { player.hidden_cards << @cards.pop }
+        3.times { player.blind_cards << @cards.pop }
         3.times { player.visible_cards << @cards.pop }
         3.times { player.hand << @cards.pop }
       end
@@ -167,7 +167,7 @@ module Brigitte
 
     def player_won(player)
       return if @winners.include? player
-      return if player.hidden_cards.compact.any?
+      return if player.blind_cards.compact.any?
       return if player.hand.any?
 
       @winners << player

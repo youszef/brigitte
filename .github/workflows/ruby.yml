@@ -3,6 +3,8 @@ name: Ruby
 on:
   push:
     branches: [ develop, master ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ develop, master ]
 

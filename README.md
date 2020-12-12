@@ -4,6 +4,31 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 
 TODO: Delete this and the text above, and describe your gem
 
+## Game rules
+Card game against max 4 players where you need to get rid of your cards as soon as possible.
+
+### Game steps
+1) You have a chance to swap the any cards in your hand with your cards that lays on the table.
+   Usually you put up your best card on table. So you can move on fast to your blind cards behind it.
+   When you have swapped your cards you push ready. When everyone is ready. The game starts with the player with the lowest card in hand.
+   Turn runs clockwise.
+
+2) In this phase a hand should always have minimum 3 cards when there is still cards on the deck. When you hand has less cards there will be cards automatically added in your hand from the deck.
+   Everybody plays untill the deck and hands are empty.
+
+3) The visible cards are taken into your hand. Now you play your hand untill it's empty.
+
+4) You take one blind card when it's your turn. When you clear all the blind cards you won the game.
+
+### Special cards
+Usually you put an equal card or higher on the pile.
+Except if 7 is on top of the pile. Then you can only put cards lower or equal to 7.
+There are other special cards
+10 clears the pile and you stay in turn. You can always throw 10
+It has the same effect if there are 4 consecutive equal cards on the pile.
+You can always throw 2.
+Ace is the highest Card.
+
 ## Installation
 
 Add this line to your application's Gemfile:
