@@ -86,9 +86,15 @@ RSpec.describe Brigitte::Game, type: :model do
       it 'returns false' do
         expect(game.play).to be_truthy
       end
-      it 'does not set current_player yet' do
+      it 'sets current_player with lowest card' do
+        card2 = Brigitte::Card.new('2', '♦')
+        game.active_players.each { |player| player.hand = [card2, card2, card2] }
+        card3 = Brigitte::Card.new('3', '♦')
+        player = game.active_players.last
+        player.hand[2] = card3
         game.play
-        expect(game.current_player).not_to be_nil
+
+        expect(game.current_player).to eq player
       end
     end
   end

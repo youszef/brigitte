@@ -65,8 +65,8 @@ module Brigitte
       return false unless @active_players.all?(&:ready)
       return @current_player if @current_player
 
-      @current_player = @active_players.min do |player1, player2|
-        player1.hand.map(&:weight).min <=> player2.hand.map(&:weight).min
+      @current_player = @active_players.min do |p1, p2|
+        p1.hand.map(&:order_level).min <=> p2.hand.map(&:order_level).min
       end
     end
 

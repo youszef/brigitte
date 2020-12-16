@@ -36,6 +36,12 @@ module Brigitte
       value.to_i
     end
 
+    def order_level
+      return 15 if @value == '2'
+
+      weight
+    end
+
     def to_h
       {
         id: id,
