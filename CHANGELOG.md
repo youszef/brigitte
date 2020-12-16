@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6] 2020-12-16
+
+### Changed
+
+- Consider card with weight of '3' to be the lowest card when
+  determening the current player when game starts.
+
 ## [0.1.5] 2020-12-12
 
 ### Changed

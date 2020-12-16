@@ -50,4 +50,23 @@ RSpec.describe Brigitte::Card, type: :model do
       end
     end
   end
+  describe '#order_level' do
+    { '3' => 3,
+      '4' => 4,
+      '5' => 5,
+      '6' => 6,
+      '7' => 7,
+      '8' => 8,
+      '9' => 9,
+      '10' => 10,
+      'J' => 11,
+      'Q' => 12,
+      'K' => 13,
+      'A' => 14,
+      '2' => 15 }.each do |value, level|
+      it "card with value #{value} has a order level of #{level}" do
+        expect(described_class.new(value, '♣').order_level).to eq level
+      end
+    end
+  end
 end
